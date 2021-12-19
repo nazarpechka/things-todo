@@ -1,6 +1,6 @@
-const Controller = require('./controller.js');
-const Model = require('./model.js');
-const View = require('./view.js');
+const Controller = require("./controller");
+const Model = require("./model");
+const View = require("./view");
 
 const app = new Controller(new Model(), new View());
 app.init();

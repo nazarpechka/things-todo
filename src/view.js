@@ -1,13 +1,11 @@
-const dateFns = require("date-fns");
-
 class View {
   constructor() {
-    this.leftContainer = document.querySelector("#left-container");
-    this.rightContainer = document.querySelector("#right-container");
-    this.overlay = document.querySelector("#overlay");
+    this.leftContainer = document.querySelector('#left-container');
+    this.rightContainer = document.querySelector('#right-container');
+    this.overlay = document.querySelector('#overlay');
   }
 
-  _createElement(tag, className, id) {
+  static _createElement(tag, className, id) {
     const element = document.createElement(tag);
     if (className) {
       element.className = className;
@@ -18,57 +16,57 @@ class View {
     return element;
   }
 
-  _createSpan(text) {
-    const span = this._createElement("span");
+  static _createSpan(text) {
+    const span = View._createElement('span');
     const node = document.createTextNode(text);
     span.appendChild(node);
     return span;
   }
 
-  _createParagraph(text) {
-    const paragraph = this._createElement("p");
+  static _createParagraph(text) {
+    const paragraph = View._createElement('p');
     const node = document.createTextNode(text);
     paragraph.appendChild(node);
     return paragraph;
   }
 
-  _createTitle(level, text) {
-    const title = this._createElement("h" + level);
+  static _createTitle(level, text) {
+    const title = View._createElement(`h${level}`);
     const node = document.createTextNode(text);
     title.appendChild(node);
     return title;
   }
 
   _createTodoItem(project, todo) {
-    const item = this._createElement("li");
+    const item = View._createElement('li');
 
-    const div = this._createElement("div");
-    const checkbox = this._createElement("input");
-    const title = this._createSpan(todo.title);
-    const dueDate = this._createSpan(todo.dueDate.substring(0, 10));
+    const div = View._createElement('div');
+    const checkbox = View._createElement('input');
+    const title = View._createSpan(todo.title);
+    const dueDate = View._createSpan(todo.dueDate.substring(0, 10));
 
     const box = this._createTodoBox(project, todo);
 
-    checkbox.type = "checkbox";
+    checkbox.type = 'checkbox';
     checkbox.checked = todo.completed;
 
-    const onOverlayClick = (e) => {
-      this._hideTodoBox(box);
+    const onOverlayClick = () => {
+      View._hideTodoBox(box);
       this.showProject(project);
     };
-    div.addEventListener("click", (e) => {
+    div.addEventListener('click', () => {
       this._showOverlay(onOverlayClick);
-      this._showTodoBox(box);
+      View._showTodoBox(box);
     });
 
-    checkbox.addEventListener("change", (e) => {
+    checkbox.addEventListener('change', () => {
       this.onCompleteTodo(todo);
     });
-    checkbox.addEventListener("click", (e) => {
+    checkbox.addEventListener('click', (e) => {
       e.stopPropagation();
     });
 
-    dueDate.style.float = "right";
+    dueDate.style.float = 'right';
 
     div.appendChild(checkbox);
     div.appendChild(title);
@@ -81,43 +79,43 @@ class View {
   }
 
   _createTodoBox(project, todo) {
-    const box = this._createElement("div", "todo-box");
-    const content = this._createElement("div", "todo-box-content");
-    const title = this._createElement("input", "todo-box-input");
-    const desc = this._createElement("textarea", "todo-box-input");
+    const box = View._createElement('div', 'todo-box');
+    const content = View._createElement('div', 'todo-box-content');
+    const title = View._createElement('input', 'todo-box-input');
+    const desc = View._createElement('textarea', 'todo-box-input');
 
-    const trash = this._createElement("i", "fas fa-trash");
-    const calendar = this._createElement("i", "fas fa-calendar");
-    const dateInput = this._createElement("input");
+    const trash = View._createElement('i', 'fas fa-trash');
+    const calendar = View._createElement('i', 'fas fa-calendar');
+    const dateInput = View._createElement('input');
 
-    const onInputChange = (e) => {
+    const onInputChange = () => {
       this.onChangeTodo(todo, title.value, desc.value, dateInput.value);
     };
 
-    title.type = "text";
+    title.type = 'text';
     title.value = todo.title;
-    title.addEventListener("change", onInputChange);
+    title.addEventListener('change', onInputChange);
 
     desc.value = todo.description;
     desc.rows = 3;
     desc.cols = 50;
-    desc.placeholder = "Notes";
-    desc.addEventListener("change", onInputChange);
+    desc.placeholder = 'Notes';
+    desc.addEventListener('change', onInputChange);
 
-    trash.addEventListener("click", (e) => {
+    trash.addEventListener('click', () => {
       this._hideOverlay();
       this.onDeleteTodo(project, todo);
     });
 
-    dateInput.style.display = "none";
-    dateInput.type = "date";
+    dateInput.style.display = 'none';
+    dateInput.type = 'date';
     dateInput.value = todo.dueDate.substring(0, 10);
-    dateInput.addEventListener("change", onInputChange);
-    calendar.addEventListener("click", (e) => {
-      if (dateInput.style.display === "block") {
-        dateInput.style.display = "none";
+    dateInput.addEventListener('change', onInputChange);
+    calendar.addEventListener('click', () => {
+      if (dateInput.style.display === 'block') {
+        dateInput.style.display = 'none';
       } else {
-        dateInput.style.display = "block";
+        dateInput.style.display = 'block';
       }
     });
 
@@ -132,17 +130,17 @@ class View {
     return box;
   }
 
-  _createNewForm(text, callback) {
-    const item = this._createElement("li");
-    const btn = this._createElement("button");
-    const label = this._createSpan(text);
-    const input = this._createElement("input");
+  static _createNewForm(text, callback) {
+    const item = View._createElement('li');
+    const btn = View._createElement('button');
+    const label = View._createSpan(text);
+    const input = View._createElement('input');
 
-    input.type = "text";
+    input.type = 'text';
 
     btn.appendChild(label);
 
-    btn.addEventListener("click", (e) => {
+    btn.addEventListener('click', () => {
       if (input.value) {
         callback(input.value);
       }
@@ -155,32 +153,32 @@ class View {
   }
 
   _onProjectClick(item, project) {
-    const items = document.querySelectorAll("#left-container ul li");
+    const items = document.querySelectorAll('#left-container ul li');
     items.forEach((element) => {
-      element.classList.remove("active");
+      element.classList.remove('active');
     });
-    item.classList.add("active");
+    item.classList.add('active');
     this.showProject(project);
   }
 
   showProjectList(projects) {
-    const appTitle = this._createTitle(1, "Todo app");
-    const list = this._createElement("ul");
-    const form = this._createNewForm("New project", (value) => {
+    const appTitle = View._createTitle(1, 'Todo app');
+    const list = View._createElement('ul');
+    const form = View._createNewForm('New project', (value) => {
       this.onNewProject(value);
     });
 
-    this.leftContainer.innerHTML = "";
+    this.leftContainer.innerHTML = '';
 
-    for (const project of projects) {
-      const item = this._createElement("li");
+    projects.forEach((project) => {
+      const item = View._createElement('li');
       item.innerHTML = project.name;
-      item.addEventListener("click", (e) => {
+      item.addEventListener('click', () => {
         this._onProjectClick(item, project);
       });
 
       list.appendChild(item);
-    }
+    });
 
     list.appendChild(form);
 
@@ -189,18 +187,18 @@ class View {
   }
 
   showProject(project) {
-    const projectName = this._createTitle(2, project.name);
-    const list = this._createElement("ul");
-    const form = this._createNewForm("New todo", (value) => {
+    const projectName = View._createTitle(2, project.name);
+    const list = View._createElement('ul');
+    const form = View._createNewForm('New todo', (value) => {
       this.onNewTodo(project, value);
     });
 
-    this.rightContainer.innerHTML = "";
+    this.rightContainer.innerHTML = '';
 
-    for (const todo of project.todos) {
+    project.todos.forEach((todo) => {
       const item = this._createTodoItem(project, todo);
       list.appendChild(item);
-    }
+    });
 
     list.appendChild(form);
 
@@ -209,23 +207,25 @@ class View {
   }
 
   _showOverlay(handle) {
-    this.overlay.style.display = "block";
-    this.overlay.onclick = (e) => {
+    this.overlay.style.display = 'block';
+    this.overlay.onclick = () => {
       this._hideOverlay();
       handle();
     };
   }
 
   _hideOverlay() {
-    this.overlay.style.display = "none";
+    this.overlay.style.display = 'none';
   }
 
-  _showTodoBox(box) {
-    box.style.display = "block";
+  static _showTodoBox(box) {
+    // eslint-disable-next-line no-param-reassign
+    box.style.display = 'block';
   }
 
-  _hideTodoBox(box) {
-    box.style.display = "none";
+  static _hideTodoBox(box) {
+    // eslint-disable-next-line no-param-reassign
+    box.style.display = 'none';
   }
 }
 

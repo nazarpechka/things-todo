@@ -1,23 +1,24 @@
-const Todo = require("./todo.js");
-const Project = require("./project.js");
+const Todo = require('./todo');
+const Project = require('./project');
 
 class Model {
   constructor() {
     this.projects = [
-      new Project("Default", [new Todo("Test", "this is a good todo")]),
+      new Project('Default', [new Todo('Test', 'this is a good todo')]),
     ];
   }
 
-  createTodo(title, description = "") {
+  static createTodo(title, description = '') {
     return new Todo(title, description);
   }
 
-  addTodo(project, title, callback) {
-    project.todos.push(this.createTodo(title));
+  static addTodo(project, title, callback) {
+    project.todos.push(Model.createTodo(title));
     callback();
   }
 
-  deleteTodo(project, todo, callback) {
+  static deleteTodo(project, todo, callback) {
+    // eslint-disable-next-line no-param-reassign
     project.todos = project.todos.filter((el) => el !== todo);
     callback();
   }
@@ -27,34 +28,32 @@ class Model {
     callback();
   }
 
-  completeTodo(todo) {
+  static completeTodo(todo) {
     todo.toggleCompleted();
   }
 
-  changeTodo(todo, title, description, dueDate) {
+  static changeTodo(todo, title, description, dueDate) {
+    // eslint-disable-next-line no-param-reassign
     todo.title = title;
+    // eslint-disable-next-line no-param-reassign
     todo.description = description;
+    // eslint-disable-next-line no-param-reassign
     todo.dueDate = dueDate;
   }
 
   save() {
-    localStorage.setItem("projects", JSON.stringify(this.projects));
+    localStorage.setItem('projects', JSON.stringify(this.projects));
   }
 
   load() {
-    if (localStorage.getItem("projects")) {
-      this.projects = JSON.parse(localStorage.getItem("projects"));
+    if (localStorage.getItem('projects')) {
+      this.projects = JSON.parse(localStorage.getItem('projects'));
       this.projects.forEach((project) => {
-        project.todos = project.todos.map((todo) => {
-          if (todo) {
-            return new Todo(
-              todo.title,
-              todo.description,
-              todo.dueDate,
-              todo.completed
-            );
-          }
-        });
+        // eslint-disable-next-line no-param-reassign
+        project.todos = project.todos.map(
+          (todo) =>
+            new Todo(todo.title, todo.description, todo.dueDate, todo.completed)
+        );
       });
     }
   }

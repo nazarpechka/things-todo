@@ -1,3 +1,5 @@
+const Model = require('./model');
+
 class Controller {
   constructor(model, view) {
     this.model = model;
@@ -29,20 +31,20 @@ class Controller {
   }
 
   onNewTodo(project, title) {
-    this.model.addTodo(project, title, () => this.onTodoListChange(project));
+    Model.addTodo(project, title, () => this.onTodoListChange(project));
   }
 
   onDeleteTodo(project, todo) {
-    this.model.deleteTodo(project, todo, () => this.onTodoListChange(project));
+    Model.deleteTodo(project, todo, () => this.onTodoListChange(project));
   }
 
   onCompleteTodo(todo) {
-    this.model.completeTodo(todo);
+    Model.completeTodo(todo);
     this.model.save();
   }
 
   onChangeTodo(todo, title, description, dueDate) {
-    this.model.changeTodo(todo, title, description, dueDate);
+    Model.changeTodo(todo, title, description, dueDate);
     this.model.save();
   }
 }

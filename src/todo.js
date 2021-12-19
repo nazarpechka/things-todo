@@ -1,7 +1,7 @@
 class Todo {
   constructor(
     title,
-    description = "",
+    description = '',
     dueDate = new Date().toISOString(),
     completed = false
   ) {
